@@ -1,9 +1,14 @@
 const asyncHandler = require('express-async-handler');
+
+const User = require('../models/usersModel');
+
 // @desc Gets user data
 // @route GET /api/users
 // @access Private
 const getUsers = asyncHandler(async (req, res) => {
-	res.status(200).json({ message: 'Get user data' });
+	const user = await User.find();
+
+	res.status(200).json(user);
 });
 
 // @desc Creates new user
