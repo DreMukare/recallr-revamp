@@ -34,7 +34,7 @@ const setBio = asyncHandler(async (req, res) => {
 		weight,
 	} = req.body;
 
-	const bio = Bio.create({
+	const bio = await Bio.create({
 		user: req.user.id,
 		conditions,
 		allergies,

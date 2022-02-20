@@ -22,7 +22,7 @@ const setDrug = asyncHandler(async (req, res) => {
 
 	const { name, dosage, instruction, duration } = req.body;
 
-	const drug = Drug.create({
+	const drug = await Drug.create({
 		user: req.user.id,
 		name,
 		dosage,
@@ -57,8 +57,6 @@ const updateDrug = asyncHandler(async (req, res) => {
 
 	// Making user logged in user is owner of bio
 	if (drug.user.toString() !== req.user.id) {
-		console.log(req.user.id);
-		console.log(await Drug.findById(req.params.id));
 		res.status(401);
 		throw new Error('User not authorized');
 	}
