@@ -6,7 +6,7 @@ const Drug = require('../models/drugModel');
 // @route GET /api/drugs
 // @access Private
 const getDrugs = asyncHandler(async (req, res) => {
-	const drugs = await Drug.find();
+	const drugs = await Drug.find({ uers: req.user.id });
 
 	res.status(200).json(drugs);
 });
@@ -15,31 +15,91 @@ const getDrugs = asyncHandler(async (req, res) => {
 // @route POST /api/drugs
 // @access Private
 const setDrug = asyncHandler(async (req, res) => {
-	if (!req.body.drug) {
+	if (!req.body) {
 		res.status(400);
 		throw new Error('Drug entry needs to have data');
 	}
 
-	res.status(200).json({ message: 'Create new drug entry' });
+	const { name, dosage, instruction, duration } = req.body;
+
+	const drug = Drug.create({
+		user: req.user.id,
+		name,
+		dosage,
+		instruction,
+		duration,
+	});
+
+	res.status(200).json(drug);
 });
 
 // @desc Updates drug data
 // @route PUT /api/drugs/:id
 // @access Private
 const updateDrug = asyncHandler(async (req, res) => {
-	if (!req.body.drug) {
+	const drug = await Drug.findById(req.params.id);
+
+	if (!req.body) {
 		res.status(400);
 		throw new Error('Please add the fields to be updated');
 	}
 
-	res.status(200).json({ message: `Updated drug ${req.params.id}` });
+	if (!drug) {
+		res.status(400);
+		throw new Error('Drug entry not found');
+	}
+
+	// Check for user
+	if (!req.user) {
+		res.status(401);
+		throw new Error('User not found');
+	}
+
+	// Making user logged in user is owner of bio
+	if (drug.user.toString() !== req.user.id) {
+		console.log(req.user.id);
+		console.log(await Drug.findById(req.params.id));
+		res.status(401);
+		throw new Error('User not authorized');
+	}
+
+	const updatedDrugEntry = await Drug.findByIdAndUpdate(
+		req.params.id,
+		req.body,
+		{
+			new: true,
+		}
+	);
+
+	res.status(200).json(updatedDrugEntry);
 });
 
 // @desc Deletes drug
 // @route DELETE /api/drugs/:id
 // @access Private
 const deleteDrug = asyncHandler(async (req, res) => {
-	res.status(200).json({ message: `Delete drug ${req.params.id}` });
+	const drug = await Drug.findById(req.params.id);
+
+	if (!drug) {
+		res.status(400);
+		throw new Error('Drug entry not found');
+	}
+
+	// Check for user
+	if (!req.user) {
+		res.status(401);
+		throw new Error('User not found');
+	}
+
+	// Making user logged in user is owner of bio
+	if (drug.user.toString() !== req.user.id) {
+		res.status(401);
+		throw new Error('User not authorized');
+	}
+
+	await drug.remove();
+
+	res.status(200).json({ message: `Deleted drug ${req.params.id}` });
 });
 
 module.exports = {
