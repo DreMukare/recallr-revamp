@@ -6,9 +6,10 @@ const {
 	updateDrug,
 	deleteDrug,
 } = require('../controllers/drugController');
+const { protect } = require('../middleware/authMiddleware');
 
-router.route('/').get(getDrugs).post(setDrug);
+router.route('/').get(protect, getDrugs).post(protect, setDrug);
 
-router.route('/:id').delete(deleteDrug).put(updateDrug);
+router.route('/:id').delete(protect, deleteDrug).put(protect, updateDrug);
 
 module.exports = router;

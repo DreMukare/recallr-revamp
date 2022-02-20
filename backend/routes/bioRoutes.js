@@ -6,9 +6,10 @@ const {
 	updateBio,
 	deleteBio,
 } = require('../controllers/bioController');
+const { protect } = require('../middleware/authMiddleware');
 
-router.route('/').get(getBios).post(setBio);
+router.route('/').get(protect, getBios).post(protect, setBio);
 
-router.route('/:id').delete(deleteBio).put(updateBio);
+router.route('/:id').delete(protect, deleteBio).put(protect, updateBio);
 
 module.exports = router;

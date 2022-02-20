@@ -5,7 +5,7 @@ const recordSchema = mongoose.Schema(
 		user: {
 			type: mongoose.Schema.Types.ObjectId,
 			required: true,
-			ref: 'UserModel',
+			ref: 'usermodel',
 		},
 		procedure: String,
 		date: Date,

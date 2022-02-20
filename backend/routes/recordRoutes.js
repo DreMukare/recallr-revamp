@@ -6,9 +6,10 @@ const {
 	updateRecord,
 	deleteRecord,
 } = require('../controllers/recordController');
+const { protect } = require('../middleware/authMiddleware');
 
-router.route('/').get(getRecords).post(setRecord);
+router.route('/').get(protect, getRecords).post(protect, setRecord);
 
-router.route('/:id').delete(deleteRecord).put(updateRecord);
+router.route('/:id').delete(protect, deleteRecord).put(protect, updateRecord);
 
 module.exports = router;

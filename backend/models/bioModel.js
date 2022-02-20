@@ -5,7 +5,7 @@ const bioSchema = mongoose.Schema(
 		user: {
 			type: mongoose.Schema.Types.ObjectId,
 			required: true,
-			ref: 'UserModel',
+			ref: 'usermodel',
 		},
 		conditions: [String],
 		allergies: [String],

@@ -5,7 +5,7 @@ const drugSchema = mongoose.Schema(
 		user: {
 			type: mongoose.Schema.Types.ObjectId,
 			required: true,
-			ref: 'UserModel',
+			ref: 'usermodel',
 		},
 		name: String,
 		dosage: String,
